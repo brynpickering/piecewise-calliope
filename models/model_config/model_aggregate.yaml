@@ -1,0 +1,51 @@
+##
+# IMPORT OTHER FILES
+##
+
+# Can either be paths relative to this file, or absolute paths
+
+import:
+    - 'metadata_aggregate.yaml'
+    - 'techs.yaml'
+    - 'locations_aggregate.yaml'
+    - 'links_aggregate.yaml'
+    - 'piecewise.yaml'
+
+##
+# MODEL NAME
+##
+
+name: "Test model"
+
+
+##
+# DATASET PATH
+##
+
+# Can either be a path relative to this file, or an absolute path
+
+data_path: 'data_aggregate'
+
+##
+# OBJECTIVE FUNCTION
+##
+
+# 'constraints.objective.objective_cost_minimization' is used by default
+
+##
+# ADDITIONAL CONSTRAINTS
+##
+
+constraints:
+    # - constraints.optional.ramping_rate
+    # - constraints.optional.secondary_carrier
+    # - constraints.optional.piecewise
+    # - constraints.optional.fixed_cost
+
+# OTHER MODEL-WIDE OPTIONS
+##
+
+system_margin:
+    power: 0
+    heat: 0
+    cooling: 0

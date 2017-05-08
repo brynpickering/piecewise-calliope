@@ -1,0 +1,19 @@
+links:
+    plant,commercial:
+        power_lines:
+            distance: 193
+        gas_pipes:
+            distance: 193
+        power_export_line:
+            distance: 193
+        heat_pipes:
+            distance: 193
+    plant,domestic:
+        power_lines:
+            distance: 309
+        gas_pipes:
+            distance: 309
+        power_export_line:
+            distance: 309
+        heat_pipes:
+            distance: 309

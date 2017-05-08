@@ -1,0 +1,80 @@
+links:
+    plant,office:
+        power_lines:
+            distance: 27
+        gas_pipes:
+            distance: 27
+
+    plant,d0:
+        power_lines:
+            distance: 15
+        gas_pipes:
+            distance: 15
+
+    plant,d9:
+        power_lines:
+            distance: 15
+        gas_pipes:
+            distance: 15
+
+    plant,d1:
+        power_lines:
+            distance: 15
+        gas_pipes:
+            distance: 15
+
+    plant,d8:
+        power_lines:
+            distance: 15
+        gas_pipes:
+            distance: 15
+
+    plant,d2:
+        power_lines:
+            distance: 15
+        gas_pipes:
+            distance: 15
+
+    plant,d7:
+        power_lines:
+            distance: 15
+        gas_pipes:
+            distance: 15
+
+
+    plant,d3:
+        power_lines:
+            distance: 15
+        gas_pipes:
+            distance: 15
+
+
+    plant,d6:
+        power_lines:
+            distance: 15
+        gas_pipes:
+            distance: 15
+
+
+    plant,d4:
+        power_lines:
+            distance: 15
+        gas_pipes:
+            distance: 15
+
+
+    plant,d5:
+        power_lines:
+            distance: 15
+        gas_pipes:
+            distance: 15
+
+
+    plant,hotel:
+        power_lines:
+            distance: 39
+        gas_pipes:
+            distance: 39
+
+
+

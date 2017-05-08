@@ -1,0 +1,52 @@
+##
+# RUN SETTINGS
+##
+
+name: "Piecewise model: summer, 5 breakpoints, equidistant breakpoints"  # Run name -- distinct from model name!
+
+model: 'model_config/model_aggregate.yaml'
+
+output:  # Only used if run via the 'calliope run' command-line tool
+    save: True
+    format: netcdf  # Choices: hdf, csv
+    path: 'Output\\results_summer_5bp_eq'  # Will be created if it doesn't exist
+
+mode: plan  # Choices: plan, operate
+
+solver: cplex
+
+solver_options:
+    mipgap: 0.03
+
+##
+# SUBSETS
+##
+
+# Leave any of these empty to disable subsetting
+
+subset_y: []  # Subset of technologies
+subset_x: []  # Subset of locations
+subset_t: ['2005-07-08', '2005-07-14']  # Subset of timesteps
+
+##
+# MODEL SETTINGS OVERRIDE
+##
+
+# Override anything in the model configuration
+
+override:
+    piecewise_info.N: 4
+    piecewise_info.linearisation: 'eq'
+    techs.chp.piecewise.htp:
+    techs.chp.piecewise.source_carrier:
+    techs.hrar.piecewise.source_carrier:
+    techs.tr.piecewise.source_carrier:
+    techs.ahp.piecewise.source_carrier:
+##
+# DEBUG OPTIONS
+##
+
+debug:
+    keep_temp_files: false  # Keep temporary files
+    overwrite_temp_files: true
+    symbolic_solver_labels: true # Use human-readable component labels? (slower)

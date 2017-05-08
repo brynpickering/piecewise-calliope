@@ -1,0 +1,380 @@
+##
+# TECHNOLOGY DEFINITIONS
+##
+
+techs:
+
+# Plant techs
+
+    chp:
+        name: 'District CHP'
+        stack_weight: 100
+        parent: conversion
+        carrier: power_chp
+        carrier_2: district_heat
+        source_carrier: gas
+        source_carrier_2: power
+        constraints:
+            e_cap.max: 1300
+            htp: 0.83
+            e_eff: 0.405
+        #piecewise:
+        #    htp:
+        #    source_carrier:
+        #    source_carrier_2:
+        costs:
+            monetary:
+                e_cap: 703.47  # GBP per kW capacity. Varies from 1050 (1MW) to 650 (7MW) - make it linear/piecewise? (https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/345190/Part_5_CHP__Finance.pdf)
+                cap_fixed: 46480
+                om_var: 0.004 # .4p/kWh for 4500 operating hours/year - might need to be om_fuel (https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/345190/Part_5_CHP__Finance.pdf)
+
+    district_heat_exchange: # connects heat distribution network to buildings
+        name: 'District heat to building heat exchanger'
+        stack_weight: 100
+        parent: conversion
+        carrier: heat
+        source_carrier: district_heat
+        constraints:
+            e_cap.max: 1100
+            e_eff: 0.95
+        costs:
+            monetary:
+                e_cap: 0.001 # dummy cost to avoid unnecessary purchase
+
+    chp_2_export: # connects CHP output to export distribution network
+        name: 'CHP to export link'
+        parent: conversion
+        source_carrier: power_chp
+        carrier: power_export
+        constraints:
+            e_cap.max: 1300
+        costs:
+            monetary:
+                e_cap: 0.001 # dummy cost to avoid unnecessary purchase
+        revenue:
+            monetary:
+                sub_var: file=export-power.csv # 80% of wholesale (https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/389069/RAEACostCurves.pdf table 5)
+
+    chp_2_dist: # connects CHP output to power distribution network
+        name: 'CHP to distribution network'
+        parent: conversion
+        source_carrier: power_chp
+        carrier: power
+        constraints:
+            e_cap.max: 1300
+        costs:
+            monetary:
+                e_cap: 0.001 # dummy cost to avoid unnecessary purchase
+
+# Heating
+
+    boiler:
+        name: 'Boiler'
+        stack_weight: 100
+        parent: conversion
+        carrier: heat
+        source_carrier: gas
+        source_carrier_2: power
+        constraints:
+            e_cap.max: 572
+            e_eff: 0.82
+        #piecewise:
+        #    source_carrier:
+        #    source_carrier_2:
+        # costs in location override
+
+# Cooling
+
+    ahp:
+        name: 'Air source heat pump'
+        stack_weight: 100
+        parent: conversion
+        carrier: cooling
+        source_carrier: power
+        constraints:
+            e_cap.max: 170
+            e_eff: 3.59
+        #piecewise:
+        #    source_carrier:
+        costs:
+            monetary:
+                e_cap: 158.42  # � per kW
+                cap_fixed: 2516.6
+
+    ec:
+        name: 'Electric Chiller'
+        stack_weight: 100
+        parent: conversion
+        carrier: cooling
+        source_carrier: power
+        constraints:
+            e_cap.max: 1000
+            e_eff: 5.20
+        #piecewise:
+        #    source_carrier:
+        costs:
+            monetary:
+                e_cap: 111.04  # � per kW
+
+    hrar:
+        name: 'Heat recovery absorption refrigerator'
+        stack_weight: 100
+        parent: conversion
+        carrier: cooling
+        source_carrier: recovered_heat
+        source_carrier_2: power
+        constraints:
+            e_cap.max: 278
+            e_eff: 1.33
+        #piecewise:
+        #    source_carrier:
+        #    source_carrier_2:
+        costs:
+            monetary:
+                e_cap: 79.218 # � per kW
+                cap_fixed: 52497
+
+    heat_recovery: #convert heat to recovered_heat to provide hrar input
+        name: 'Heat recoverer'
+        stack_weight: 100
+        parent: conversion
+        carrier: recovered_heat
+        source_carrier: heat
+        constraints:
+            e_cap.max: 210
+        costs:
+            monetary:
+                e_cap: 0.001 # dummy cost to avoid unnecessary purchase
+
+    heat_generator: #convert gas to recovered_heat to provide alternate hrar source
+        name: 'Heat recoverer'
+        stack_weight: 100
+        parent: conversion
+        carrier: recovered_heat
+        source_carrier: gas
+        constraints:
+            e_cap.max: 210
+            e_eff: 0.8
+        costs:
+            monetary:
+                e_cap: 0.001 # dummy cost to avoid unnecessary purchase
+
+##-Renewables-##
+    pv:
+        name: 'Solar PV'
+        color: '#99CB48'
+        stack_weight: 100
+        parent: supply
+        carrier: power_pv
+        constraints:
+            r: file  # Will look for `pv_r.csv` in data directory - already accounted for panel efficiency
+            c_eff: 0.85 #ppt
+            e_cap.max: 250
+        costs:
+            monetary:
+                e_cap: 1000
+                cap_fixed: 1500
+
+    st:
+        name: 'Solar Thermal'
+        color: '#99CB48'
+        stack_weight: 100
+        parent: supply
+        carrier: heat
+        constraints:
+            r: file # Will look for `st_r.csv` in data directory - already accounted for panel efficiency
+            e_cap.max: 500
+        costs:
+            monetary:
+                e_cap: 1200
+
+    pv_2_export: # connects PV to export distribution network
+        name: 'PV to export link'
+        parent: conversion
+        source_carrier: power_pv
+        carrier: power_export
+        constraints:
+            e_cap.max: 1000
+        costs:
+            monetary:
+                e_cap: 0.001 # dummy cost to avoid unnecessary purchase
+
+    pv_2_building: # connects PV to building demand
+        name: 'PV to building demand'
+        parent: conversion
+        source_carrier: power_pv
+        carrier: power
+        constraints:
+            e_cap.max: 1000
+        costs:
+            monetary:
+                e_cap: 0.001 # dummy cost to avoid unnecessary purchase
+
+
+##-STORAGE-##
+
+    store_cooling:
+        name: 'Cold thermal storage'
+        stack_weight: 100
+        parent: storage
+        carrier: cooling
+        constraints:
+            s_cap.max: 278
+            e_cap.max: 270
+        costs:
+            monetary:
+                s_cap: 303.25
+                e_cap: 0.001 # dummy cost
+                cap_fixed: 527.25
+
+    store_heat:
+        name: 'Hot thermal storage'
+        stack_weight: 100
+        parent: storage
+        carrier: heat
+        constraints:
+            s_cap.max: 572
+            e_cap.max: 570
+        costs:
+            monetary:
+                s_cap: 65.683
+                e_cap: 0.001 # dummy cost
+                cap_fixed: 527.25
+
+    store_elec:
+        name: 'Battery storage'
+        stack_weight: 100
+        parent: storage
+        carrier: power
+        constraints:
+            s_cap.max: 278
+            e_cap.max: 7
+        costs:
+            monetary:
+                s_cap: 350
+                e_cap: 0.001 # dummy cost
+                cap_fixed: 1666.7
+
+##-POWER SUPPLY-##
+
+    supply_grid_power:
+        name: 'National grid import'
+        parent: supply
+        carrier: power
+        constraints:
+            r: inf
+            e_cap.max: 2000
+        costs:
+            monetary:
+                e_cap: 15
+                om_fuel: 0.095 # 9.5p/kWh electricity price #ppt
+                cap_fixed: 75 # electricity standing charge #ppt
+
+
+
+##-GAS SUPPLY-##
+
+    supply_gas:
+        name: 'Natural gas import'
+        parent: supply
+        carrier: gas
+        constraints:
+            r: inf
+            e_cap.max: 2000
+        costs:
+            monetary:
+                e_cap: 1
+                cap_fixed: 16800 # fixed cost to lay 300m of pipe to the area #ppt
+                om_fuel: 0.025 # 2.5p/kWh gas price #ppt
+                #cap_fixed: 90 # electricity standing charge #ppt
+
+##-DEMAND-##
+
+    demand_power:
+        name: 'Power demand'
+        parent: demand
+        carrier: power
+
+    unmet_demand_power:
+        name: 'Unmet power demand'
+        parent: unmet_demand
+        carrier: power
+
+    demand_cooling:
+        name: 'Cooling demand'
+        parent: demand
+        carrier: cooling
+
+    unmet_demand_cooling:
+        name: 'Unmet cooling demand'
+        parent: unmet_demand
+        carrier: cooling
+
+    demand_heat:
+        name: 'Heat demand'
+        parent: demand
+        carrier: heat
+
+    unmet_demand_heat:
+        name: 'Unmet heat demand'
+        parent: unmet_demand
+        carrier: heat
+
+# Export
+
+    demand_power_export: # connects CHP output to export distribution network
+        name: 'National grid export'
+        parent: demand
+        carrier: power_export
+
+##-DISTRIBUTION-##
+
+    power_lines:
+        name: 'AC power distribution'
+        parent: transmission
+        carrier: power
+        constraints:
+            e_cap.max: 2000
+            e_eff: 0.98
+        costs:
+            monetary:
+                e_cap: 0.001 # dummy cost to avoid unnecessary purchase
+
+    power_export_line:
+        name: 'AC power distribution'
+        parent: transmission
+        carrier: power_export
+        constraints:
+            e_cap.max: 2000
+            e_eff: 0.98
+        costs:
+            monetary:
+                e_cap: 0.001 # dummy cost to avoid unnecessary purchase
+
+    heat_pipes:
+        name: 'District heat distribution'
+        parent: transmission
+        carrier: district_heat
+        constraints:
+            e_cap.max: 2000
+        constraints_per_distance:
+            e_loss: 0.000025
+        costs_per_distance:
+            monetary:
+                cap_fixed: 530
+        costs:
+            monetary:
+                e_cap: 0.001 # dummy cost to avoid unnecessary purchase
+
+    gas_pipes:
+        name: 'District gas distribution'
+        parent: transmission
+        carrier: gas
+        constraints:
+            e_cap.max: 2000
+        costs_per_distance:
+            monetary:
+                cap_fixed: 56
+        costs:
+            monetary:
+                e_cap: 0.001 # dummy cost to avoid unnecessary purchase

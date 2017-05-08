@@ -1,0 +1,34 @@
+#
+# Metadata used in solution analysis
+#
+# distances are given in metres/10, 
+# until transmission analysis is re-written for district systems
+
+    metadata:
+    map_boundary: [0.0, 0.0, 21.0, 21.0]
+
+    location_coordinates:
+        plant: [4.0, 8.0]
+        hotel: [14.0, 16.5]
+        office: [4.0, 16.0]
+        d0: [11.3, 7.2]
+        d1: [11.3, 5.8]
+        d2: [11.3, 4.4]
+        d3: [11.3, 3.0]
+        d4: [11.3, 1.6]
+        d9: [9.3, 7.2]
+        d8: [9.3, 5.8]
+        d7: [9.3, 4.4]
+        d6: [9.3, 3.0]
+        d5: [9.3, 1.6]
+        N0: [4.0, 11.5]
+        N1: [10.3, 11.5]
+        N2: [10.3, 7.2]
+        N3: [10.3, 5.8]
+        N4: [10.3, 4.4]
+        N5: [10.3, 3.0]
+        N6: [10.3, 1.6]
+        N7: [14.0, 11.5]
+
+    location_ordering: ['plant','hotel','office','d0','d1','d2','d3','d4','d5','d6','d7','d8','d9','N0',
+'N1','N2','N3','N4','N5','N6','N7']

@@ -1,0 +1,13 @@
+#
+# Metadata used in solution analysis
+#
+
+metadata:
+    map_boundary: [0.0, 0.0, 21.0, 21.0]
+
+    location_coordinates:
+        plant: [4.0, 8.0]
+        commercial: [14.0, 16.5]
+        domestic: [10.3, 4.4]
+
+    location_ordering: ['plant','commercial','domestic']

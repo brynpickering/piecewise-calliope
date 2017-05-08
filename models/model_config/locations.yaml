@@ -1,0 +1,185 @@
+##
+# LOCATIONS
+##
+
+locations:
+    plant:
+        techs: ['chp',
+         'chp_2_dist',
+         'chp_2_export',
+         'supply_grid_power',
+         'demand_power_export',
+         'supply_gas',
+         'unmet_demand_power']
+        override:
+            demand_power_export:
+                    constraints:
+                        r: -100000000
+                        force_r: false
+            supply_grid_power:
+                costs:
+                    monetary:
+                        e_cap: 50 # cost of transformers
+                        cap_fixed: 50000 # cost of installing substation
+
+    hotel:
+        techs: ['demand_power',
+         'demand_cooling',
+         'demand_heat',
+         'chp',
+         'chp_2_dist',
+         'ec',
+         'ahp',
+         'boiler',
+         'hrar',
+         'pv',
+         'st',
+         'store_cooling',
+         'store_heat',
+         'store_elec',
+         'heat_recovery',
+         'heat_generator',
+         'district_heat_exchange',
+         'pv_2_export',
+         'pv_2_building',
+         'unmet_demand_heat',
+         'unmet_demand_cooling'
+         ]
+
+        override:
+            demand_power:
+                constraints:
+                    r: file=demand_power.csv
+            demand_heat:
+                constraints:
+                    r: file=demand_heat.csv
+            demand_cooling:
+                constraints:
+                    r: file=demand_cooling.csv
+            pv_2_export: #different FIT for commercial vs domestic
+                revenue:
+                    om_fuel: 0.0491 #FIT return for PV export #ppt
+            boiler: #different boiler costs for commercial vs domestic
+                costs:
+                    monetary:
+                        e_cap: 35.324  #ppt
+                        cap_fixed: 2024.3 #ppt
+            pv:
+                constraints:
+                    r_area.max: 1300 # hotel roof area - 10%
+                    #e_cap.min: 50 # changing tariff structure below 50kW ##can't use at the moment as it forces the technology to exist at 50kW
+                revenue:
+                    monetary:
+                        sub_var: 0.0203 # revenue for just producing electricity
+            st:
+                constraints:
+                    r_area.max: 1300 # hotel roof area - 10%
+                revenue:
+                    monetary:
+                        sub_var: 0.1028 # RHI for solar thermal, per kWh produced #ppt
+            chp: #convert from district chp to micro-chp
+                carrier_2: heat
+                constraints:
+                    e_cap.max: 280
+
+    office:
+        techs: [
+         'demand_power',
+         'demand_cooling',
+         'demand_heat',
+         'ec',
+         'ahp',
+         'boiler',
+         'hrar',
+         'pv',
+         'st',
+         'store_cooling',
+         'store_heat',
+         'store_elec',
+         'heat_recovery',
+         'heat_generator',
+         'district_heat_exchange',
+         'pv_2_export',
+         'pv_2_building',
+         'unmet_demand_heat',
+         'unmet_demand_cooling'
+         ]
+        override:
+            demand_power:
+                constraints:
+                    r: file=demand_power.csv
+            demand_heat:
+                constraints:
+                    r: file=demand_heat.csv
+            demand_cooling:
+                constraints:
+                    r: file=demand_cooling.csv
+            pv_2_export: #different FIT for commercial vs domestic
+                revenue:
+                    om_fuel: 0.0491 #ppt
+            boiler: #different boiler costs for commercial vs domestic
+                costs:
+                    monetary:
+                        e_cap: 35.324  #ppt
+                        cap_fixed: 2024.3 #ppt
+            pv:
+                constraints:
+                    r_area.max: 900 # office roof area - 10%
+                    #e_cap.min: 50 # changing tariff structure below 50kW
+                revenue:
+                    monetary:
+                        sub_var: 0.0203 # revenue for just producing electricity
+            st:
+                constraints:
+                    r_area.max: 900 # office roof area - 10%
+                revenue:
+                    monetary:
+                        sub_var: 0.1028 # RHI for solar thermal, per kWh produced #ppt
+
+## Houses
+    d0, d1, d2, d3, d4, d5, d6, d7, d8, d9:
+        techs: [
+         'demand_power',
+         'demand_heat',
+         'ahp',
+         'boiler',
+         'pv',
+         'st',
+         'store_heat',
+         'store_elec',
+         'district_heat_exchange',
+         'pv_2_export',
+         'pv_2_building',
+         'unmet_demand_heat'
+         ]
+        override:
+            demand_power:
+                constraints:
+                    r: file=demand_power.csv
+            demand_heat:
+                constraints:
+                    r: file=demand_heat.csv
+            boiler: #different boiler costs for commercial vs domestic
+                costs:
+                    monetary:
+                        e_cap: 16.528
+                        cap_fixed: 862.12
+            pv:
+                constraints:
+                    r_area.max: 130 # house roof area - 10%
+                    e_cap.max: 50 # changing tariff structure below 50kW
+                revenue:
+                    monetary:
+                        sub_annual: 80.5 # reimbursement per kWp from FIT #ppt
+            st:
+                constraints:
+                    r_area.max: 130 # house roof area - 10%
+                revenue:
+                    monetary:
+                        sub_var: 0.1974 # RHI for solar thermal, per kWh produced
+
+    N0, N1, N2, N3, N4, N5, N6, N7: #locations for splitting up heat network #ppt
+        techs: ['unmet_demand_power'] #dummy to give some tech at these nodes
+        override:
+            unmet_demand_heat:
+                color: '#666664'
