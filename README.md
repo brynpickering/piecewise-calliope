@@ -16,16 +16,21 @@ The study utilised CPLEX 12.6.2.0 for MILP solving.
 Running models
 --------------
 
-Once Calliope installed, models can be run and results can be analysed as per the (documentation)[http://calliope.readthedocs.io/en/v0.4.1/].
+Once Calliope installed, models can be run and results can be analysed as per the [documentation](http://calliope.readthedocs.io/en/v0.4.1).
 
 Model run configurations can be found in the `models` folder, where each run configuration has been named as: `run_[season]_[No. of breakpoints]bp_[linearisation method].yaml`
 
 The models will save their solutions as netCDF to an Output folder. These solution files are required for ex-post analysis functions to operate correctly.
 
+Piecewise linearisation
+-----------------------
+The functions `get_piecewise.py` and `minimize_linearisation_error.py` are used to find breakpoint positions along technology nonlinear characteristic curves. Breakpoint allocation is done equidistantly as well as optimised (to reduce error vs. the nonlinear curve). The result of `get_piecewise.py` is a YAML file that is used by this modified version of Calliope to create piecewise constraints.
+
 Ex-post analysis
 ----------------
 
-ex-post.py contains a function for analysis of the error incurred by linearisation of consumption curves. Each linear model run is compared to its nonlinear counterpart, by applying the relevant nonlinear consumption curves to the technology outputs obtained using the linear optimisation. The output of this function is two xarray DataArrays, ``error`` and ``error_t``. The former provides per technology & location error in consumption, heat to power ratio (for CHP) and cost. The latter additionally provides consumption and HTP error for each timestep.
+ex-post.py contains a function for analysis of the error incurred by linearisation of consumption curves. Each linear model run is compared to its nonlinear counterpart, by applying the relevant nonlinear consumption curves to the technology outputs obtained using the linear optimisation.
+The output of this function is two xarray DataArrays, ``error`` and ``error_t``. The former provides per technology & location error in consumption, heat to power ratio (for CHP) and cost. The latter additionally provides consumption and HTP error for each timestep.
 
 How to cite
 -----------
